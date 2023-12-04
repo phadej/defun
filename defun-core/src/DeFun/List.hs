@@ -18,15 +18,19 @@ module DeFun.List (
     Sequence, SequenceSym,
     -- * Foldr
     Foldr, FoldrSym, FoldrSym1, FoldrSym2,
+    -- * Foldl
+    Foldl, FoldlSym, FoldlSym1, FoldlSym2,
     -- * ZipWith
     ZipWith, ZipWithSym, ZipWithSym1, ZipWithSym2,
     -- * Filter
     Filter, FilterSym, FilterSym1,
+    -- * Reverse
+    Reverse, ReverseSym,
 ) where
 
-import Data.SOP.NP (NP (..))
-import Prelude (Bool (..))
 import Data.Singletons.Bool (SBool (..))
+import Data.SOP.NP          (NP (..))
+import Prelude              (Bool (..))
 
 import DeFun.Core
 import DeFun.Function
@@ -47,7 +51,7 @@ import DeFun.Function
 -- >>> :kind! Append [1, 2, 3] [4, 5, 6]
 -- Append [1, 2, 3] [4, 5, 6] :: [Natural]
 -- = [1, 2, 3, 4, 5, 6]
--- 
+--
 type Append :: [a] -> [a] -> [a]
 type family Append xs ys where
     Append '[]       ys = ys
@@ -231,6 +235,29 @@ data FoldrSym2 f z xs
 type instance App (FoldrSym2 f z) xs = Foldr f z xs
 
 -------------------------------------------------------------------------------
+-- Foldl
+-------------------------------------------------------------------------------
+
+-- | List left fold
+--
+type Foldl :: (b ~> a ~> b) -> b -> [a] -> b
+type family Foldl f z xs where
+    Foldl f z '[]      = z
+    Foldl f z (x : xs) = Foldl f (f @@ z @@ x) xs
+
+type FoldlSym :: (b ~> a ~> b) ~> b ~> [a] ~> b
+data FoldlSym f
+type instance App FoldlSym f = FoldlSym1 f
+
+type FoldlSym1 :: (b ~> a ~> b) -> b ~> [a] ~> b
+data FoldlSym1 f z
+type instance App (FoldlSym1 f) z = FoldlSym2 f z
+
+type FoldlSym2 :: (b ~> a ~> b) -> b -> [a] ~> b
+data FoldlSym2 f z xs
+type instance App (FoldlSym2 f z) xs = Foldl f z xs
+
+-------------------------------------------------------------------------------
 -- ZipWith
 -------------------------------------------------------------------------------
 
@@ -280,3 +307,21 @@ type instance App FilterSym p = FilterSym1 p
 type FilterSym1  :: (a ~> Bool) -> [a] ~> [a]
 data FilterSym1 p xs
 type instance App (FilterSym1 p) xs = Filter p xs
+
+-------------------------------------------------------------------------------
+-- Reverse
+-------------------------------------------------------------------------------
+
+-- | Reverse list
+--
+-- >>> :kind! Reverse [1,2,3,4]
+-- Reverse [1,2,3,4] :: [Natural]
+-- = [4, 3, 2, 1]
+--
+type Reverse :: [a] -> [a]
+type family Reverse xs where
+    Reverse xs = Foldl (FlipSym1 (Con2 '(:))) '[] xs
+
+type ReverseSym :: [a] ~> [a]
+data ReverseSym xs
+type instance App ReverseSym xs = Reverse xs

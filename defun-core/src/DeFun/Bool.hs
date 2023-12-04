@@ -13,8 +13,8 @@ module DeFun.Bool (
     Not, NotSym,
 ) where
 
-import Data.Type.Bool       (Not, type (&&), type (||))
-import Prelude              (Bool)
+import Data.Type.Bool (Not, type (&&), type (||))
+import Prelude        (Bool)
 
 import DeFun.Core
 

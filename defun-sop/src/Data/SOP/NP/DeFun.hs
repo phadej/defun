@@ -29,9 +29,15 @@ module Data.SOP.NP.DeFun (
     -- * Foldr
     Foldr, FoldrSym, FoldrSym1, FoldrSym2,
     foldr, foldrSym, foldrSym1, foldrSym2,
+    -- * Foldl
+    Foldl, FoldlSym, FoldlSym1, FoldlSym2,
+    foldl, foldlSym, foldlSym1, foldlSym2,
     -- * ZipWith
     ZipWith, ZipWithSym, ZipWithSym1, ZipWithSym2,
     zipWith, zipWithSym, zipWithSym1, zipWithSym2,
+    -- * Reverse
+    Reverse, ReverseSym,
+    reverse, reverseSym,
 ) where
 
 import DeFun.List
@@ -42,10 +48,15 @@ import DeFun.Core
 import DeFun.Function
 
 -- $setup
--- >>> import Prelude (Char, Maybe (..))
+-- >>> import Prelude (Char, Maybe (..), Show)
 -- >>> import Numeric.Natural (Natural)
+-- >>> import Data.SOP.NP (NP (..))
 -- >>> import DeFun.Core
 -- >>> :set -dppr-cols9999
+--
+-- >>> data Nat = Z | S Nat
+-- >>> data SNat (n :: Nat) where { SZ :: SNat Z; SS :: SNat n -> SNat (S n) }
+-- >>> deriving instance Show (SNat n)
 
 -------------------------------------------------------------------------------
 -- Append
@@ -73,7 +84,7 @@ mapSym :: Lam (a :~> b) (Lam (NP a) (NP b)) MapSym
 mapSym = Lam mapSym1
 
 mapSym1 :: Lam a b f -> Lam (NP a) (NP b) (MapSym1 f)
-mapSym1 f = Lam (map f) 
+mapSym1 f = Lam (map f)
 
 -------------------------------------------------------------------------------
 -- Concat
@@ -92,7 +103,7 @@ concatSym = Lam concat
 
 concatMap :: Lam a (NP b) f -> NP a xs -> NP b (ConcatMap f xs)
 concatMap _ Nil       = Nil
-concatMap f (x :* xs) = append (f @@ x) (concatMap f xs) 
+concatMap f (x :* xs) = append (f @@ x) (concatMap f xs)
 
 concatMapSym :: Lam2 (a :~> NP b) (NP a) (NP b) ConcatMapSym
 concatMapSym = Lam concatMapSym1
@@ -132,7 +143,7 @@ sequenceSym = Lam sequence
 -------------------------------------------------------------------------------
 
 foldr :: Lam2 a b b f -> b x -> NP a ys -> b (Foldr f x ys)
-foldr _ z Nil       = z 
+foldr _ z Nil       = z
 foldr f z (x :* xs) = f @@ x @@ (foldr f z xs)
 
 foldrSym :: Lam3 (a :~> b :~> b) b (NP a) b FoldrSym
@@ -145,13 +156,30 @@ foldrSym2 :: Lam2 a b b f -> b x -> Lam (NP a) b (FoldrSym2 f x)
 foldrSym2 f z = Lam (foldr f z)
 
 -------------------------------------------------------------------------------
+-- Foldl
+-------------------------------------------------------------------------------
+
+foldl :: Lam2 b a b f -> b x -> NP a ys -> b (Foldl f x ys)
+foldl _ z Nil       = z
+foldl f z (x :* xs) = foldl f (f @@ z @@ x) xs
+
+foldlSym :: Lam3 (b :~> a :~> b) b (NP a) b FoldlSym
+foldlSym = Lam foldlSym1
+
+foldlSym1 :: Lam2 b a b f -> Lam2 b (NP a) b (FoldlSym1 f)
+foldlSym1 f = Lam (foldlSym2 f)
+
+foldlSym2 :: Lam2 b a b f -> b x -> Lam (NP a) b (FoldlSym2 f x)
+foldlSym2 f z = Lam (foldl f z)
+
+-------------------------------------------------------------------------------
 -- ZipWith
 -------------------------------------------------------------------------------
 
 zipWith :: Lam2 a b c f -> NP a xs -> NP b ys -> NP c (ZipWith f xs ys)
 zipWith _ Nil       _         = Nil
 zipWith _ (_ :* _)  Nil       = Nil
-zipWith f (x :* xs) (y :* ys) = f @@ x @@ y :* zipWith f xs ys 
+zipWith f (x :* xs) (y :* ys) = f @@ x @@ y :* zipWith f xs ys
 
 zipWithSym :: Lam3 (a :~> b :~> c) (NP a) (NP b) (NP c) ZipWithSym
 zipWithSym = Lam zipWithSym1
@@ -161,3 +189,18 @@ zipWithSym1 f = Lam (zipWithSym2 f)
 
 zipWithSym2 :: Lam2 a b c f -> NP a xs -> Lam (NP b) (NP c) (ZipWithSym2 f xs)
 zipWithSym2 f xs = Lam (zipWith f xs)
+
+-------------------------------------------------------------------------------
+-- Reverse
+-------------------------------------------------------------------------------
+
+-- |
+--
+-- >>> reverse (SZ :* SS SZ :* SS (SS SZ) :* Nil)
+-- SS (SS SZ) :* SS SZ :* SZ :* Nil
+--
+reverse :: NP a xs -> NP a (Reverse xs)
+reverse = foldl (flipSym1 (con2 (:*))) Nil
+
+reverseSym :: Lam (NP a) (NP a) ReverseSym
+reverseSym = Lam reverse
