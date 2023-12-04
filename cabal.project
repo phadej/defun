@@ -1,2 +1,5 @@
-packages: .
+packages: defun
+packages: defun-bool
+packages: defun-core
+packages: defun-sop
 tests:    True

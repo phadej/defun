@@ -27,6 +27,11 @@ data FunKind :: Type -> Type -> Type
 --
 type Fun a b = FunKind a b -> Type
 
+-- implementation note: defunctionalized symbols would be nicer
+-- if defined as constructors of open data kind.
+-- But GHC doesn't have such functionality yet:
+-- https://gitlab.haskell.org/ghc/ghc/-/issues/11080
+
 -- | An infix synonmy for 'Fun'.
 type (~>) a b = Fun a b
 infixr 0 ~>
