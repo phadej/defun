@@ -9,12 +9,16 @@ module DeFun (
     module DeFun.Function,
     module DeFun.Bool,
     module DeFun.List,
+    module Data.SOP.NP.DeFun,
+    module SBool.DeFun,
 ) where
 
+import Data.SOP.NP.DeFun
+import DeFun.Bool
 import DeFun.Core
 import DeFun.Function
-import DeFun.Bool
 import DeFun.List
+import SBool.DeFun
 
 -- $intro
 --
@@ -60,7 +64,7 @@ import DeFun.List
 -- type MapSym :: (a ~> b) ~> [a] ~> [b]
 -- data MapSym f
 -- type instance App MapSym f = MapSym1 f
--- 
+--
 -- type MapSym1  :: (a ~> b) -> [a] ~> [b]
 -- data MapSym1 f xs
 -- type instance App (MapSym1 f) xs = Map f xs
@@ -74,7 +78,7 @@ import DeFun.List
 --
 -- However, @Sing@ is quite resticting. For example, one natural "term-level" reflection of lists
 -- is 'Data.SOP.NP.NP' type.
--- 
+--
 -- For example given 'Append' type family, we can write a very useful 'append' function:
 --
 -- @
