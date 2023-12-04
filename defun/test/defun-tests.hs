@@ -19,6 +19,15 @@ mapAppend :: NP a xs -> NP (NP a) xss -> NP (NP a) (Map (AppendSym1 xs) xss)
 mapAppend xs yss = map (appendSym @@ xs) yss
 
 -------------------------------------------------------------------------------
+-- split_NP
+-------------------------------------------------------------------------------
+
+-- | inverse of 'append'
+split_NP :: NP pa xs -> NP a (Append xs ys) -> (NP a xs, NP a ys)
+split_NP Nil       xys        = (Nil, xys)
+split_NP (_ :* ps) (x :* xys) = let (xs, ys) = split_NP ps xys in (x :* xs, ys)
+
+-------------------------------------------------------------------------------
 -- FLATTEN utils
 -------------------------------------------------------------------------------
 
@@ -42,7 +51,7 @@ append_NS xs (Right ys0) = goRight xs ys0 where
     goRight (_ :* xs) ys = S (goRight xs ys)
 
 concatMap_NS :: Lam pa (NP pb) f -> NP pa xs -> Lam a (NS b) f -> NS a xs -> NS b (ConcatMap f xs)
-concatMap_NS pf pxs f = concatMap_NS' pf pxs (Lam (\(_ :*: x) -> f @@ x)) 
+concatMap_NS pf pxs f = concatMap_NS' pf pxs (Lam (\(_ :*: x) -> f @@ x))
 
 concatMap_NS' :: Lam pa (NP pb) f -> NP pa xs -> Lam (pa :*: a) (NS b) f -> NS a xs -> NS b (ConcatMap f xs)
 concatMap_NS' pf (px :* pxs) = concatMap_NS_aux' pf px pxs
@@ -70,7 +79,7 @@ map2_NS pf pxs pys f xs ys = concatMap_NS
 
 sequence_NSNP :: NP (NP sing) xss -> NP (NS f) xss -> NS (NP f) (Sequence xss)
 sequence_NSNP Nil         Nil         = Z Nil
-sequence_NSNP (xs :* xss) (ys :* yss) = map2_NS 
+sequence_NSNP (xs :* xss) (ys :* yss) = map2_NS
     (con2 (:*))
     xs
     (sequence xss)
