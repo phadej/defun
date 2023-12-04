@@ -3,3 +3,15 @@ packages: defun-bool
 packages: defun-core
 packages: defun-sop
 tests:    True
+
+package defun
+  ghc-options: -Wall -Wno-trustworthy-safe
+
+package defun-core
+  ghc-options: -Wall -Wno-trustworthy-safe
+
+package defun-sop
+  ghc-options: -Wall -Wno-trustworthy-safe
+
+package defun-bool
+  ghc-options: -Wall -Wno-trustworthy-safe

@@ -28,8 +28,6 @@ module DeFun.List (
     Reverse, ReverseSym,
 ) where
 
-import Data.Singletons.Bool (SBool (..))
-import Data.SOP.NP          (NP (..))
 import Prelude              (Bool (..))
 
 import DeFun.Core

@@ -12,7 +12,7 @@ tested-with:     GHC ==9.2.8 || ==9.4.8 || ==9.6.3 || ==9.8.1
 synopsis:        Defunctionalization helpers
 description:
   The package @defun@ provides defunctionalization helpers, most importantly
-  type family 'DeFun.Core.App' to write type-level computations.
+  type family 'DeFun.Core.App' allowing to write higher-order type families.
   The @singletons@ package also has its own type family @Apply@,
   but the machinery is tied to the @Sing@ / singletons.
   .
