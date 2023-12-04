@@ -17,8 +17,6 @@ module SBool.DeFun (
 ) where
 
 import Data.Singletons.Bool (SBool (..), sboolAnd, sboolNot, sboolOr)
-import Data.Type.Bool       (Not, type (&&), type (||))
-import Prelude              (Bool)
 
 import DeFun.Bool
 import DeFun.Core

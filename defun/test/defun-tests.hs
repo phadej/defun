@@ -1,8 +1,8 @@
-module Main (main) where
+module Main where
 
 import Data.SOP (NP (..), NS (..))
 import GHC.Generics ((:*:) (..))
-import Prelude (IO, putStrLn, Either (..), undefined)
+import Prelude (IO, putStrLn, Either (..))
 
 import qualified Prelude as P
 
@@ -36,7 +36,7 @@ map_NS f (Z x)  = Z (f @@ x)
 map_NS f (S xs) = S (map_NS f xs)
 
 map_NS' :: Lam (px :*: a) b f -> NP px xs -> NS a xs -> NS b (Map f xs)
-map_NS' f Nil         x      = case x of {}
+map_NS' _ Nil         x      = case x of {}
 map_NS' f (px :* _)   (Z x)  = Z (f @@ (px :*: x))
 map_NS' f (_  :* pxs) (S xs) = S (map_NS' f pxs xs)
 
@@ -47,17 +47,18 @@ append_NS _ (Left xs) = goLeft xs where
     goLeft (S x) = S (goLeft x)
 append_NS xs (Right ys0) = goRight xs ys0 where
     goRight :: NP sing xs' -> NS f ys -> NS f (Append xs' ys)
-    goRight Nil       ys = ys
-    goRight (_ :* xs) ys = S (goRight xs ys)
+    goRight Nil        ys = ys
+    goRight (_ :* xs') ys = S (goRight xs' ys)
 
 concatMap_NS :: Lam pa (NP pb) f -> NP pa xs -> Lam a (NS b) f -> NS a xs -> NS b (ConcatMap f xs)
 concatMap_NS pf pxs f = concatMap_NS' pf pxs (Lam (\(_ :*: x) -> f @@ x))
 
 concatMap_NS' :: Lam pa (NP pb) f -> NP pa xs -> Lam (pa :*: a) (NS b) f -> NS a xs -> NS b (ConcatMap f xs)
+concatMap_NS' _  Nil         = \_ xs -> case xs of {}
 concatMap_NS' pf (px :* pxs) = concatMap_NS_aux' pf px pxs
 
 concatMap_NS_aux' :: forall a b f x xs pa pb. Lam pa (NP pb) f -> pa x -> NP pa xs -> Lam (pa :*: a) (NS b) f -> NS a (x : xs) -> NS b (ConcatMap f (x : xs))
-concatMap_NS_aux' pf px pxs f (Z x) = append_NS
+concatMap_NS_aux' pf px _pxs f (Z x) = append_NS
     @_
     @(ConcatMap f xs)
     (pf @@ px)
