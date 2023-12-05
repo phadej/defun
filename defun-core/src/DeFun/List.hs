@@ -3,6 +3,16 @@
 --
 -- For term-level reflections see [defun-sop package](https://hackage.haskell.org/package/defun-sop).
 --
+-- Implementation note: It would be great if first-order type families,
+-- like 'Append' and 'Concat', were defined already in @base@,
+-- e.g. in @Data.Type.List@ module.
+-- Higher-order type families, like @Map@, obviously cannot be there
+-- as they rely on the defunctorization machinery.
+-- Yet, some first-order type families like 'Sequence' and 'Reverse'
+-- may also be defined directly, but it's more convenient to define
+-- them as special case of an higher-order type family ('Map2' and 'Foldl'
+-- respectively), as that makes working with them more convenient.
+--
 module DeFun.List (
     -- * Append
     Append, AppendSym, AppendSym1,
