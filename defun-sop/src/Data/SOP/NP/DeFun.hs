@@ -42,7 +42,9 @@ module Data.SOP.NP.DeFun (
 
 import DeFun.List
 
-import Data.SOP.NP (NP (..))
+import Data.SOP
+import Data.SOP.NP (NP (..), cpure_NP)
+import Data.Proxy (Proxy (..))
 
 import DeFun.Core
 import DeFun.Function
@@ -71,6 +73,13 @@ appendSym = Lam appendSym1
 
 appendSym1 :: NP a xs -> Lam (NP a) (NP a) (AppendSym1 xs)
 appendSym1 xs = Lam (append xs)
+
+split :: NP b xs -> NP a (Append xs ys) -> (NP a xs, NP a ys)
+split Nil ys              = (Nil, ys)
+split (_ :* bs) (z :* zs) = let (xs, ys) = split bs zs in (z :* xs, ys)
+
+splitI :: SListI xs => NP a (Append xs ys) -> (NP a xs, NP a ys)
+splitI = split (cpure_NP (Proxy @Top) Proxy)
 
 -------------------------------------------------------------------------------
 -- Map

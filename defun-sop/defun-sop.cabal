@@ -25,6 +25,7 @@ common language
     DataKinds
     EmptyCase
     GADTs
+    FlexibleContexts
     KindSignatures
     NoImplicitPrelude
     PatternSynonyms
