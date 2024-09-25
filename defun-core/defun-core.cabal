@@ -59,7 +59,7 @@ library
     DeFun.List
 
   build-depends:
-    , base            ^>=4.16.3.0 || ^>=4.17.2.0 || ^>=4.18.0.0 || ^>=4.19.0.0
+    , base            ^>=4.16.3.0 || ^>=4.17.2.0 || ^>=4.18.0.0 || ^>=4.19.0.0 || ^>=4.20.0.0
 
   x-docspec-extra-packages: defun singleton-bool sop-core
   x-docspec-options:        -XDataKinds -XGADTs -XStandaloneDeriving
