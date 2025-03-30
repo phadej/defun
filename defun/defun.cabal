@@ -8,7 +8,14 @@ maintainer:      Oleg Grenrus <oleg.grenrus@iki.fi>
 category:        Data
 build-type:      Simple
 extra-doc-files: CHANGELOG.md
-tested-with:     GHC ==9.2.8 || ==9.4.8 || ==9.6.3 || ==9.8.1
+tested-with:
+  GHC ==9.2.8
+   || ==9.4.8
+   || ==9.6.7
+   || ==9.8.4
+   || ==9.10.1
+   || ==9.12.2
+
 synopsis:        Defunctionalization helpers
 description:
   The package @defun@ provides defunctionalization helpers, most importantly
@@ -80,6 +87,6 @@ test-suite defun-tests
   hs-source-dirs: test
   main-is:        defun-tests.hs
   build-depends:
-    , base <5
+    , base      <5
     , defun
     , sop-core
