@@ -1,7 +1,6 @@
 cabal-version:   2.4
 name:            defun-bool
-version:         0.1
-x-revision:      1
+version:         0.1.0.1
 license:         BSD-3-Clause
 license-file:    LICENSE
 author:          Oleg Grenrus <oleg.grenrus@iki.fi>
@@ -14,8 +13,9 @@ tested-with:
    || ==9.4.8
    || ==9.6.7
    || ==9.8.4
-   || ==9.10.1
+   || ==9.10.3
    || ==9.12.2
+   || ==9.14.1
 
 synopsis:        Defunctionalization helpers: booleans
 description:
@@ -47,12 +47,12 @@ common language
     ViewPatterns
 
 library
-  import:            language
-  hs-source-dirs:    src
-  exposed-modules:   SBool.DeFun
+  import:                   language
+  hs-source-dirs:           src
+  exposed-modules:          SBool.DeFun
   build-depends:
-    , base            ^>=4.16.3.0 || ^>=4.17.2.0 || ^>=4.18.0.0 || ^>=4.19.0.0 || ^>=4.20.0.0 || ^>=4.21.0.0
     , defun-core      ^>=0.1
     , singleton-bool  ^>=0.1.7
 
-  x-docspec-options: -XDataKinds -XGADTs -XStandaloneDeriving
+  x-docspec-extra-packages: base
+  x-docspec-options:        -XDataKinds -XGADTs -XStandaloneDeriving

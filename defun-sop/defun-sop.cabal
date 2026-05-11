@@ -1,6 +1,6 @@
 cabal-version:   2.4
 name:            defun-sop
-version:         0.1.0.1
+version:         0.1.0.2
 license:         BSD-3-Clause
 license-file:    LICENSE
 author:          Oleg Grenrus <oleg.grenrus@iki.fi>
@@ -13,8 +13,9 @@ tested-with:
    || ==9.4.8
    || ==9.6.7
    || ==9.8.4
-   || ==9.10.1
+   || ==9.10.3
    || ==9.12.2
+   || ==9.14.1
 
 synopsis:        Defunctionalization helpers: lists
 description:
@@ -46,12 +47,12 @@ common language
     ViewPatterns
 
 library
-  import:            language
-  hs-source-dirs:    src
-  exposed-modules:   Data.SOP.NP.DeFun
+  import:                   language
+  hs-source-dirs:           src
+  exposed-modules:          Data.SOP.NP.DeFun
   build-depends:
-    , base        ^>=4.16.3.0 || ^>=4.17.2.0 || ^>=4.18.0.0 || ^>=4.19.0.0 || ^>=4.20.0.0 || ^>=4.21.0.0
     , defun-core  ^>=0.1
     , sop-core    ^>=0.5.0.2
 
-  x-docspec-options: -XDataKinds -XGADTs -XStandaloneDeriving -XKindSignatures
+  x-docspec-extra-packages: base
+  x-docspec-options:        -XDataKinds -XGADTs -XStandaloneDeriving -XKindSignatures
